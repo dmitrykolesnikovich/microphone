@@ -75,8 +75,14 @@
     </script>
 
     <script>
-      window.playdeck.loading();
-      setTimeout(() => window.playdeck.loading(100), 1000);
+      window.addEventListener('message', (e) => {
+        if(e.data === 'pd:load') {                  
+          const playdeck = window.playdeck;
+          playdeck.loading();
+          setTimeout(() => playdeck.loading(100), 4000);
+          console.log('🎾 game:', JSON.stringify(playdeck.getUser()));
+        }
+      }, '*');
     </script>
   </body>
 
