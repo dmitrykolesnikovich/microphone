@@ -74,15 +74,8 @@
       }
     </script>
 
-    <script>
-      window.addEventListener('message', (e) => {
-        if(e.data === 'pd:load') {                  
-          const playdeck = window.playdeck;
-          playdeck.loading();
-          setTimeout(() => playdeck.loading(100), 4000);
-          console.log('🎾 game:', JSON.stringify(playdeck.getUser()));
-        }
-      }, '*');
+    <script>      
+      window.parent.postMessage({playdeck: {method: 'loading', value: 100}}, '*');      
     </script>
   </body>
 
