@@ -14,20 +14,14 @@
 	
 			// Ask user for access to the microphone.
 			if(navigator.mediaDevices) {
-				alert(navigator.mediaDevices);
-				alert(navigator.mediaDevices.getUserMedia);
-	
-				navigator.mediaDevices.getUserMedia({ "audio": true, video: false }).then((stream) => {
-					alert('#0');
+				navigator.mediaDevices.getUserMedia({ audio: true, video: false }).then((stream) => {
 					// Instantiate the media recorder.
 					const mediaRecorder = new MediaRecorder(stream);
 	
-					alert('#1');
 					// Create a buffer to store the incoming data.
 					let chunks = [];
 					mediaRecorder.ondataavailable = (event) => chunks.push(event.data);
 	
-					alert('#2');
 					// When you stop the recorder, create a empty audio clip.
 					mediaRecorder.onstop = (event) => {
 						const audio = new Audio();
@@ -43,10 +37,8 @@
 						chunks = [];
 					};
 	
-					alert('#3');
 					// Set up event handler for the "Record" button.
 					$("#record").on("click", () => {
-						alert('#4');
 						if(recording) {
 							mediaRecorder.stop();
 							recording = false;
@@ -57,10 +49,8 @@
 							$("#record").html("Stop");
 						}
 					});
-	
-					alert('#5');
 				}).catch((err) => {
-					alert(`Error1: ${err.message}`);
+					alert(`Error: ${err.message}`);
 				});
 			} else {
 				alert("Oh no! Your browser cannot access your microphone. Please update your browser.");
@@ -70,7 +60,7 @@
 </head>
 <body>
 <div style="text-align: center;">
-    <h1 style="color: orange">Audio Clip Recorder (version 6)</h1>
+    <h1 style="color: orange">Audio Clip Recorder (version 7)</h1>
     <p>
         <button id="record" onclick="initialize()">Record</button>
     </p>
