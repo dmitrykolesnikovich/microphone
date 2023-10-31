@@ -42,6 +42,7 @@
 	
 					// Set up event handler for the "Record" button.
 					$("#record")[0].onclick = null;
+					$("#record").html("Record");
 					$("#record").on("click", () => {
 						if(recording) {
 							mediaRecorder.stop();
@@ -64,9 +65,9 @@
 </head>
 <body>
 <div style="text-align: center;">
-    <h1 style="color: orange">Audio Clip Recorder (version 9)</h1>
+    <h3 style="color: orange">Audio Clip Recorder (version 10)</h3>
     <p>
-        <button id="record" onclick="initialize()">Record</button>
+        <button id="record" onclick="initialize()">Initialize</button>
     </p>
     <div id="sound-clip"></div>
 </div>
