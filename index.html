@@ -14,9 +14,9 @@
 	
 			// Ask user for access to the microphone.
 			if(navigator.mediaDevices) {
-				alert("Initializing...")
+				alert("Requesting Mic...")
 				navigator.mediaDevices.getUserMedia({ audio: true, video: false }).then((stream) => {
-					alert("success")
+					alert("Success")
 
 					// Instantiate the media recorder.
 					const mediaRecorder = new MediaRecorder(stream);
@@ -55,7 +55,7 @@
 						}
 					});
 				}).catch((err) => {
-					alert(`failure: ${err.message}`);
+					alert(`Failure: ${err.message}`);
 				});
 			} else {
 				alert("Oh no! Your browser cannot access your microphone. Please update your browser.");
@@ -65,9 +65,9 @@
 </head>
 <body>
 <div style="text-align: center;">
-    <h3 style="color: orange">Audio Clip Recorder (version 11)</h3>
+    <h3 style="color: orange">Audio Clip Recorder (version 12)</h3>
     <p>
-        <button id="record" onclick="initialize()">Initialize</button>
+        <button id="record" onclick="initialize()">Request Mic</button>
     </p>
     <div id="sound-clip"></div>
 </div>
