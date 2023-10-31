@@ -4,81 +4,80 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>Microphone</title>
     <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+	<script type="module">
+		function initialize() {
+			// Set up the AudioContext.
+			const audioCtx = new AudioContext();
+	
+			// Top-level variable keeps track of whether we are recording or not.
+			let recording = false;
+	
+			// Ask user for access to the microphone.
+			if(navigator.mediaDevices) {
+				alert(navigator.mediaDevices);
+				alert(navigator.mediaDevices.getUserMedia);
+	
+				navigator.mediaDevices.getUserMedia({ "audio": true, video: false }).then((stream) => {
+					alert('#0');
+					// Instantiate the media recorder.
+					const mediaRecorder = new MediaRecorder(stream);
+	
+					alert('#1');
+					// Create a buffer to store the incoming data.
+					let chunks = [];
+					mediaRecorder.ondataavailable = (event) => chunks.push(event.data);
+	
+					alert('#2');
+					// When you stop the recorder, create a empty audio clip.
+					mediaRecorder.onstop = (event) => {
+						const audio = new Audio();
+						audio.setAttribute("controls", "");
+						$("#sound-clip").append(audio);
+						$("#sound-clip").append("<br />");
+	
+						// Combine the audio chunks into a blob, then point the empty audio clip to that blob.
+						const blob = new Blob(chunks, { "type": "audio/ogg; codecs=opus" });
+						audio.src = window.URL.createObjectURL(blob);
+	
+						// Clear the `chunks` buffer so that you can record again.
+						chunks = [];
+					};
+	
+					alert('#3');
+					// Set up event handler for the "Record" button.
+					$("#record").on("click", () => {
+						alert('#4');
+						if(recording) {
+							mediaRecorder.stop();
+							recording = false;
+							$("#record").html("Record");
+						} else {
+							mediaRecorder.start();
+							recording = true;
+							$("#record").html("Stop");
+						}
+					});
+	
+					alert('#5');
+				}).catch((err) => {
+					alert(`Error1: ${err.message}`);
+				});
+			} else {
+				alert("Oh no! Your browser cannot access your microphone. Please update your browser.");
+			}
+		}	
+	</script>
 </head>
 <body>
 <div style="text-align: center;">
-    <h1 style="color: orange">Audio Clip Recorder (version 4)</h1>
+    <h1 style="color: orange">Audio Clip Recorder (version 5)</h1>
     <p>
         <button id="record" onclick="initialize()">Record</button>
     </p>
     <div id="sound-clip"></div>
 </div>
 <script>
-	function initialize() {
-		// Set up the AudioContext.
-		const audioCtx = new AudioContext();
-
-		// Top-level variable keeps track of whether we are recording or not.
-		let recording = false;
-
-		// Ask user for access to the microphone.
-		if(navigator.mediaDevices) {
-			alert(navigator.mediaDevices);
-			alert(navigator.mediaDevices.getUserMedia);
-
-			navigator.mediaDevices.getUserMedia({ "audio": true, video: false }).then((stream) => {
-				alert('#0');
-				// Instantiate the media recorder.
-				const mediaRecorder = new MediaRecorder(stream);
-
-				alert('#1');
-				// Create a buffer to store the incoming data.
-				let chunks = [];
-				mediaRecorder.ondataavailable = (event) => chunks.push(event.data);
-
-				alert('#2');
-				// When you stop the recorder, create a empty audio clip.
-				mediaRecorder.onstop = (event) => {
-					const audio = new Audio();
-					audio.setAttribute("controls", "");
-					$("#sound-clip").append(audio);
-					$("#sound-clip").append("<br />");
-
-					// Combine the audio chunks into a blob, then point the empty audio clip to that blob.
-					const blob = new Blob(chunks, { "type": "audio/ogg; codecs=opus" });
-					audio.src = window.URL.createObjectURL(blob);
-
-					// Clear the `chunks` buffer so that you can record again.
-					chunks = [];
-				};
-
-				alert('#3');
-				// Set up event handler for the "Record" button.
-				$("#record").on("click", () => {
-					alert('#4');
-					if(recording) {
-						mediaRecorder.stop();
-						recording = false;
-						$("#record").html("Record");
-					} else {
-						mediaRecorder.start();
-						recording = true;
-						$("#record").html("Stop");
-					}
-				});
-
-				alert('#5');
-			}).catch((err) => {
-				alert("Oh no! Your browser cannot access your microphone.");
-			});
-		} else {
-			alert("Oh no! Your browser cannot access your microphone. Please update your browser.");
-		}
-	}	
-</script>
-<script>
 	window.parent.postMessage({ playdeck: { method: 'loading', value: 100 } }, '*');
 </script>
 </body>
-
 </html>
