@@ -78,7 +78,7 @@ function initialize() {
         soundClips.appendChild(clipContainer);
 
         audio.controls = true;
-        const blob = new Blob(chunks, { 'type' : 'audio/ogg; codecs=opus' });
+        const blob = new Blob(chunks, { 'type' : 'audio/mp3' });
         chunks = [];
         const audioURL = window.URL.createObjectURL(blob);
         audio.src = audioURL;
