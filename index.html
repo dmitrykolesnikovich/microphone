@@ -29,17 +29,16 @@
 	
 					// When you stop the recorder, create a empty audio clip.
 					mediaRecorder.onstop = (event) => {
-						const audio = new Audio();
-						audio.setAttribute("controls", "");
-						$("#sound-clip").append(audio);
-						$("#sound-clip").append("<br />");
-	
 						// Combine the audio chunks into a blob, then point the empty audio clip to that blob.
 						const blob = new Blob(chunks, { "type": "audio/mp3" });
 
 						const reader = new FileReader();
 						reader.readAsDataURL(blob);
 						reader.onloadend = () => {
+							const audio = new Audio();
+							audio.setAttribute("controls", "");
+							$("#sound-clip").append(audio);
+							$("#sound-clip").append("<br />");
 							const base64data = reader.result;
 							audio.src = base64data
 						}
