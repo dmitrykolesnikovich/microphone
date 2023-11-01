@@ -1,4 +1,6 @@
 function initialize() {
+  alert('Web dictaphone version 5');
+
   // set up basic variables for app
 
   const record = document.querySelector('.record');
