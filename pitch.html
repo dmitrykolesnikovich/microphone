@@ -5,7 +5,7 @@
     <title>Pitch Detection</title>
 </head>
 <body>
-<h1>Pitch version 3</h1>
+<h1>Pitch version 4</h1>
 <h1>Frequency (Hz)</h1>
 <h2 id="frequency">0.0</h2>
 <div>
@@ -19,14 +19,22 @@
     </button>
 </div>
 <script>
+    var audioCtx;
+    var microphoneStream;
+    var analyserNode;
+    var audioData;
+    var corrolatedSignal;
+    var localMaxima;
+    var frequencyDisplayElement;
+
     function initialize() {
-        var audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        var microphoneStream = null;
-        var analyserNode = audioCtx.createAnalyser()
-        var audioData = new Float32Array(analyserNode.fftSize);;
-        var corrolatedSignal = new Float32Array(analyserNode.fftSize);;
-        var localMaxima = new Array(10);
-        var frequencyDisplayElement = document.querySelector('#frequency');
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        microphoneStream = null;
+        analyserNode = audioCtx.createAnalyser()
+        audioData = new Float32Array(analyserNode.fftSize);;
+        corrolatedSignal = new Float32Array(analyserNode.fftSize);;
+        localMaxima = new Array(10);
+        frequencyDisplayElement = document.querySelector('#frequency');
     }    
 
     function startPitchDetection()
