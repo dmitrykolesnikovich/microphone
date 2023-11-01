@@ -5,7 +5,7 @@
     <title>Pitch Detection</title>
 </head>
 <body>
-Pitch version 2
+<h1>Pitch version 3</h1>
 <h1>Frequency (Hz)</h1>
 <h2 id="frequency">0.0</h2>
 <div>
@@ -20,73 +20,73 @@ Pitch version 2
 </div>
 <script>
     function initialize() {
-        let audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        let microphoneStream = null;
-        let analyserNode = audioCtx.createAnalyser()
-        let audioData = new Float32Array(analyserNode.fftSize);;
-        let corrolatedSignal = new Float32Array(analyserNode.fftSize);;
-        let localMaxima = new Array(10);
-        const frequencyDisplayElement = document.querySelector('#frequency');
+        var audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        var microphoneStream = null;
+        var analyserNode = audioCtx.createAnalyser()
+        var audioData = new Float32Array(analyserNode.fftSize);;
+        var corrolatedSignal = new Float32Array(analyserNode.fftSize);;
+        var localMaxima = new Array(10);
+        var frequencyDisplayElement = document.querySelector('#frequency');
+    }    
 
-        function startPitchDetection()
-        {
-            navigator.mediaDevices.getUserMedia ({audio: true})
-                .then((stream) =>
-                {
-                    microphoneStream = audioCtx.createMediaStreamSource(stream);
-                    microphoneStream.connect(analyserNode);
+    function startPitchDetection()
+    {
+        navigator.mediaDevices.getUserMedia ({audio: true})
+            .then((stream) =>
+            {
+                microphoneStream = audioCtx.createMediaStreamSource(stream);
+                microphoneStream.connect(analyserNode);
 
-                    audioData = new Float32Array(analyserNode.fftSize);
-                    corrolatedSignal = new Float32Array(analyserNode.fftSize);
+                audioData = new Float32Array(analyserNode.fftSize);
+                corrolatedSignal = new Float32Array(analyserNode.fftSize);
 
-                    setInterval(() => {
-                        analyserNode.getFloatTimeDomainData(audioData);
+                setInterval(() => {
+                    analyserNode.getFloatTimeDomainData(audioData);
 
-                        let pitch = getAutocorrolatedPitch();
+                    var pitch = getAutocorrolatedPitch();
 
-                        frequencyDisplayElement.innerHTML = `${pitch}`;
-                    }, 300);
-                })
-                .catch((err) =>
-                {
-                    console.log(err);
-                });
-        }
+                    frequencyDisplayElement.innerHTML = `${pitch}`;
+                }, 300);
+            })
+            .catch((err) =>
+            {
+                console.log(err);
+            });
+    }
 
-        function getAutocorrolatedPitch()
-        {
-            // First: autocorrolate the signal
+    function getAutocorrolatedPitch()
+    {
+        // First: autocorrolate the signal
 
-            let maximaCount = 0;
+        var maximaCount = 0;
 
-            for (let l = 0; l < analyserNode.fftSize; l++) {
-                corrolatedSignal[l] = 0;
-                for (let i = 0; i < analyserNode.fftSize - l; i++) {
-                    corrolatedSignal[l] += audioData[i] * audioData[i + l];
-                }
-                if (l > 1) {
-                    if ((corrolatedSignal[l - 2] - corrolatedSignal[l - 1]) < 0
-                        && (corrolatedSignal[l - 1] - corrolatedSignal[l]) > 0) {
-                        localMaxima[maximaCount] = (l - 1);
-                        maximaCount++;
-                        if ((maximaCount >= localMaxima.length))
-                            break;
-                    }
+        for (var l = 0; l < analyserNode.fftSize; l++) {
+            corrolatedSignal[l] = 0;
+            for (var i = 0; i < analyserNode.fftSize - l; i++) {
+                corrolatedSignal[l] += audioData[i] * audioData[i + l];
+            }
+            if (l > 1) {
+                if ((corrolatedSignal[l - 2] - corrolatedSignal[l - 1]) < 0
+                    && (corrolatedSignal[l - 1] - corrolatedSignal[l]) > 0) {
+                    localMaxima[maximaCount] = (l - 1);
+                    maximaCount++;
+                    if ((maximaCount >= localMaxima.length))
+                        break;
                 }
             }
-
-            // Second: find the average distance in samples between maxima
-
-            let maximaMean = localMaxima[0];
-
-            for (let i = 1; i < maximaCount; i++)
-                maximaMean += localMaxima[i] - localMaxima[i - 1];
-
-            maximaMean /= maximaCount;
-
-            return audioCtx.sampleRate / maximaMean;
         }
-    }    
+
+        // Second: find the average distance in samples between maxima
+
+        var maximaMean = localMaxima[0];
+
+        for (var i = 1; i < maximaCount; i++)
+            maximaMean += localMaxima[i] - localMaxima[i - 1];
+
+        maximaMean /= maximaCount;
+
+        return audioCtx.sampleRate / maximaMean;
+    }
 </script>
 </body>
 </html>
