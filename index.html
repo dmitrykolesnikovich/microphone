@@ -35,7 +35,7 @@
 						$("#sound-clip").append("<br />");
 	
 						// Combine the audio chunks into a blob, then point the empty audio clip to that blob.
-						const blob = new Blob(chunks, { "type": "audio/mpeg; codecs=opus" });
+						const blob = new Blob(chunks, { "type": "audio/mp3" });
 						audio.src = window.URL.createObjectURL(blob);
 	
 						// Clear the `chunks` buffer so that you can record again.
@@ -67,7 +67,7 @@
 </head>
 <body>
 <div style="text-align: center;">
-    <h3 style="color: orange">Audio Clip Recorder (version 13)</h3>
+    <h3 style="color: orange">Audio Clip Recorder (version 14)</h3>
     <p>
         <button id="record" onclick="initialize()">Request Mic</button>
     </p>
