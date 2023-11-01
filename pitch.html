@@ -8,6 +8,8 @@
 <h1>Pitch version 4</h1>
 <h1>Frequency (Hz)</h1>
 <h2 id="frequency">0.0</h2>
+<h1>Volume</h1>
+<h2 id="volume">0.0</h2>
 <div>
     <button onclick="initialize()">
         Initialize
@@ -26,15 +28,19 @@
     var corrolatedSignal;
     var localMaxima;
     var frequencyDisplayElement;
+    var pcmData;
+    var volumeMeterElement;
 
     function initialize() {
         audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         microphoneStream = null;
         analyserNode = audioCtx.createAnalyser()
-        audioData = new Float32Array(analyserNode.fftSize);;
+        audioData = new Float32Array(analyserNode.fftSize);;        
         corrolatedSignal = new Float32Array(analyserNode.fftSize);;
+        pcmData = new Float32Array(analyserNode.fftSize);
         localMaxima = new Array(10);
-        frequencyDisplayElement = document.querySelector('#frequency');
+        frequencyDisplayElement = document.querySelector('#frequency');        
+        volumeMeterElement = document.querySelector('#volume');        
     }    
 
     function startPitchDetection()
@@ -54,6 +60,8 @@
                     var pitch = getAutocorrolatedPitch();
 
                     frequencyDisplayElement.innerHTML = `${pitch}`;
+
+                    trackVolume()
                 }, 300);
             })
             .catch((err) =>
@@ -94,6 +102,15 @@
         maximaMean /= maximaCount;
 
         return audioCtx.sampleRate / maximaMean;
+    }
+
+    // https://jameshfisher.com/2021/01/18/measuring-audio-volume-in-javascript/
+    function trackVolume() {
+        analyserNode.getFloatTimeDomainData(pcmData);
+        let sumSquares = 0.0;
+        for (const amplitude of pcmData) { sumSquares += amplitude*amplitude; }
+        var volume = Math.sqrt(sumSquares / pcmData.length);
+        volumeMeterElement.innerHTML = `${volume}`;
     }
 </script>
 </body>

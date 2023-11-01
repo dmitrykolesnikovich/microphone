@@ -8,6 +8,10 @@
 		function initialize() {
 			// Set up the AudioContext.
 			const audioCtx = new AudioContext();
+			
+			const analyserNode = audioCtx.createAnalyser()			
+			const pcmData = new Float32Array(analyserNode.fftSize);
+			const volumeMeterElement = document.querySelector('#volume'); 
 	
 			// Top-level variable keeps track of whether we are recording or not.
 			let recording = false;
@@ -17,6 +21,9 @@
 				alert("Requesting Mic...")
 				navigator.mediaDevices.getUserMedia({ audio: true, video: false }).then((stream) => {
 					alert("Success")
+
+					microphoneStream = audioCtx.createMediaStreamSource(stream);
+                	microphoneStream.connect(analyserNode);
 
 					// Instantiate the media recorder.
 					const mediaRecorder = new MediaRecorder(stream);
@@ -67,15 +74,26 @@
 			} else {
 				alert("Oh no! Your browser cannot access your microphone. Please update your browser.");
 			}
+
+			// volume
+			setInterval(() => {
+				analyserNode.getFloatTimeDomainData(pcmData);
+				let sumSquares = 0.0;
+				for (const amplitude of pcmData) sumSquares += amplitude*amplitude;
+				var volume = Math.sqrt(sumSquares / pcmData.length);
+				volumeMeterElement.innerHTML = `${volume * 1000}`;
+			}, 300);
 		}	
 	</script>
 </head>
 <body>
 <div style="text-align: center;">
-    <h3 style="color: orange">Audio Clip Recorder (version 17)</h3>
+    <h3 style="color: orange">Audio Clip Recorder (version 18)</h3>
     <p>
         <button id="record" onclick="initialize()">Request Mic</button>
     </p>
+	<h1>Volume</h1>
+	<h2 id="volume">0.0</h2>
     <div id="sound-clip"></div>
 </div>
 <script>
